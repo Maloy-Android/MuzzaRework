@@ -16,6 +16,7 @@ val PureBlackKey = booleanPreferencesKey("pureBlack")
 val NewInterfaceKey = booleanPreferencesKey("newInterface")
 val ShowLikedAndDownloadedPlaylist = booleanPreferencesKey("showLikedAndDownloadedPlaylist")
 val FlatSubfoldersKey = booleanPreferencesKey("flatSubfolders")
+val SwipeThumbnailKey = booleanPreferencesKey("swipeThumbnail")
 
 val EnabledTabsKey = stringPreferencesKey("enabledTabs")
 val DefaultOpenTabKey = stringPreferencesKey("defaultOpenTab")
