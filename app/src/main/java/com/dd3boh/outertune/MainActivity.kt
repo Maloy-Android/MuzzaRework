@@ -133,10 +133,12 @@ import com.dd3boh.outertune.constants.StopMusicOnTaskClearKey
 import com.dd3boh.outertune.db.MusicDatabase
 import com.dd3boh.outertune.db.entities.SearchHistory
 import com.dd3boh.outertune.extensions.toEnum
+import com.dd3boh.outertune.models.toMediaMetadata
 import com.dd3boh.outertune.playback.DownloadUtil
 import com.dd3boh.outertune.playback.MusicService
 import com.dd3boh.outertune.playback.MusicService.MusicBinder
 import com.dd3boh.outertune.playback.PlayerConnection
+import com.dd3boh.outertune.playback.queues.YouTubeQueue
 import com.dd3boh.outertune.ui.component.BottomSheetMenu
 import com.dd3boh.outertune.ui.component.LocalMenuState
 import com.dd3boh.outertune.ui.component.SearchBar
@@ -208,6 +210,7 @@ import com.dd3boh.outertune.utils.urlEncode
 import com.valentinilk.shimmer.LocalShimmerTheme
 import com.zionhuang.innertube.YouTube
 import com.zionhuang.innertube.models.SongItem
+import com.zionhuang.innertube.models.WatchEndpoint
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -635,7 +638,7 @@ class MainActivity : ComponentActivity() {
                                         withContext(Dispatchers.IO) {
                                             YouTube.queue(listOf(videoId))
                                         }.onSuccess {
-                                            sharedSong = it.firstOrNull()
+                                            playerConnection?.playQueue(YouTubeQueue(WatchEndpoint(videoId = it.firstOrNull()?.id), it.firstOrNull()?.toMediaMetadata()))
                                         }.onFailure {
                                             reportException(it)
                                         }
