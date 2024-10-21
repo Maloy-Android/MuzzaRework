@@ -28,6 +28,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.PlaylistAdd
 import androidx.compose.material.icons.automirrored.rounded.QueueMusic
+import androidx.compose.material.icons.automirrored.rounded.VolumeOff
 import androidx.compose.material.icons.automirrored.rounded.VolumeUp
 import androidx.compose.material.icons.rounded.AddCircleOutline
 import androidx.compose.material.icons.rounded.Info
@@ -364,11 +365,19 @@ fun PlayerMenu(
             .padding(horizontal = 24.dp)
             .padding(top = 24.dp, bottom = 6.dp)
     ) {
-        Icon(
-            imageVector = Icons.AutoMirrored.Rounded.VolumeUp,
-            contentDescription = null,
-            modifier = Modifier.size(28.dp)
-        )
+        if (playerVolume.value == 0f) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Rounded.VolumeOff,
+                contentDescription = null,
+                modifier = Modifier.size(26.dp)
+            )
+        } else {
+            Icon(
+                imageVector = Icons.AutoMirrored.Rounded.VolumeUp,
+                contentDescription = null,
+                modifier = Modifier.size(28.dp)
+            )
+        }
 
         BigSeekBar(
             progressProvider = playerVolume::value,
