@@ -1,7 +1,9 @@
 package com.dd3boh.outertune.ui.player
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -200,21 +202,33 @@ fun MiniMediaInfo(
                 .weight(1f)
                 .padding(horizontal = 6.dp)
         ) {
-            Text(
-                text = mediaMetadata.title,
-                color = MaterialTheme.colorScheme.onSurface,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-            Text(
-                text = mediaMetadata.artists.joinToString { it.name },
-                color = MaterialTheme.colorScheme.secondary,
-                fontSize = 12.sp,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+            AnimatedContent(
+                targetState = mediaMetadata.title,
+                transitionSpec = { fadeIn() togetherWith fadeOut() },
+                label = "",
+            ) { title ->
+                Text(
+                    text = title,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+            AnimatedContent(
+                targetState = mediaMetadata.artists.joinToString { it.name },
+                transitionSpec = { fadeIn() togetherWith fadeOut() },
+                label = "",
+            ) { artists ->
+                Text(
+                    text = artists,
+                    color = MaterialTheme.colorScheme.secondary,
+                    fontSize = 12.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
         }
     }
 }
