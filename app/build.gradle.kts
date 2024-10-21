@@ -171,6 +171,8 @@ dependencies {
     implementation(projects.kugou)
     implementation(projects.lrclib)
 
+    implementation(libs.squigglyslider)
+
     coreLibraryDesugaring(libs.desugaring)
 
     implementation(libs.timber)
