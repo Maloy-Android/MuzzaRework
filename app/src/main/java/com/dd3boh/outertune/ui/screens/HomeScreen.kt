@@ -32,6 +32,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.TrendingUp
 import androidx.compose.material.icons.rounded.Casino
+import androidx.compose.material.icons.rounded.Download
+import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Person
@@ -213,6 +215,20 @@ fun HomeScreen(
                         title = stringResource(R.string.stats),
                         icon = Icons.AutoMirrored.Rounded.TrendingUp,
                         onClick = { navController.navigate("stats") },
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    NavigationTile(
+                        title = stringResource(R.string.liked_songs),
+                        icon = Icons.Rounded.Favorite,
+                        onClick = { navController.navigate("auto_playlist/liked") },
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    NavigationTile(
+                        title = stringResource(R.string.downloaded_songs),
+                        icon = Icons.Rounded.Download,
+                        onClick = { navController.navigate("auto_playlist/downloads") },
                         modifier = Modifier.weight(1f)
                     )
 
