@@ -247,6 +247,9 @@
     <string name="right">Right</string>
     <string name="misc">Misc</string>
     <string name="default_open_tab">Default open tab</string>
+    <string name="grid_cell_size">Grid cell size</string>
+    <string name="small">Small</string>
+    <string name="big">Big</string>
     <string name="player_slider_style">Player slider style</string>
     <string name="default_">Default</string>
     <string name="squiggly">Squiggly</string>

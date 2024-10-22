@@ -24,8 +24,12 @@ enum class SliderStyle {
 }
 
 val EnabledTabsKey = stringPreferencesKey("enabledTabs")
-val DefaultOpenTabKey = stringPreferencesKey("defaultOpenTab")
 val DefaultOpenTabNewKey = stringPreferencesKey("defaultOpenTabNew")
+val DefaultOpenTabKey = stringPreferencesKey("defaultOpenTab")
+val GridCellSizeKey = stringPreferencesKey("gridCellSize")
+enum class GridCellSize {
+    SMALL, BIG
+}
 
 val DiscordTokenKey = stringPreferencesKey("discordToken")
 val DiscordInfoDismissedKey = booleanPreferencesKey("discordInfoDismissed")
