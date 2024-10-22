@@ -27,6 +27,12 @@ val EnabledTabsKey = stringPreferencesKey("enabledTabs")
 val DefaultOpenTabKey = stringPreferencesKey("defaultOpenTab")
 val DefaultOpenTabNewKey = stringPreferencesKey("defaultOpenTabNew")
 
+val DiscordTokenKey = stringPreferencesKey("discordToken")
+val DiscordInfoDismissedKey = booleanPreferencesKey("discordInfoDismissed")
+val DiscordUsernameKey = stringPreferencesKey("discordUsername")
+val DiscordNameKey = stringPreferencesKey("discordName")
+val EnableDiscordRPCKey = booleanPreferencesKey("discordRPCEnable")
+
 /**
  * Content
  */

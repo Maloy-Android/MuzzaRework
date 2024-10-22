@@ -25,6 +25,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.dd3boh.outertune.LocalPlayerAwareWindowInsets
@@ -60,6 +61,11 @@ fun SettingsScreen(
             title = { Text(stringResource(R.string.player_and_audio)) },
             icon = { Icon(Icons.Rounded.PlayArrow, null) },
             onClick = { navController.navigate("settings/player") }
+        )
+        PreferenceEntry(
+            title = { Text(stringResource(R.string.discord_integration)) },
+            icon = { Icon(painterResource(R.drawable.discord), null) },
+            onClick = { navController.navigate("settings/discord") }
         )
         PreferenceEntry(
             title = { Text(stringResource(R.string.local_player_settings_title)) },

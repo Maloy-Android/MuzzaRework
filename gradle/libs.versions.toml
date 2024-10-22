@@ -7,8 +7,10 @@ material3 = "1.2.1"
 media3 = "1.4.1"
 room = "2.6.1"
 hilt = "2.52"
+json = "20240303"
 ktor = "2.3.12"
 ksp = "2.0.20-1.0.24"
+coreKtx = "1.13.1"
 
 [libraries]
 guava = { group = "com.google.guava", name = "guava", version = "33.3.0-android" }
@@ -41,6 +43,8 @@ accompanist-swiperefresh = { group = "com.google.accompanist", name = "accompani
 
 coil = { group = "io.coil-kt", name = "coil-compose", version = "2.7.0" }
 
+core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+
 shimmer = { group = "com.valentinilk.shimmer", name = "compose-shimmer", version = "1.3.1" }
 
 palette = { group = "androidx.palette", name = "palette", version = "1.0.0" }
@@ -63,6 +67,8 @@ ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.r
 ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-encoding = { group = "io.ktor", name = "ktor-client-encoding", version.ref = "ktor" }
 ktor-serialization-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
+
+json = { module = "org.json:json", version.ref = "json" }
 
 brotli = { group = "org.brotli", name = "dec", version = "0.1.2" }
 

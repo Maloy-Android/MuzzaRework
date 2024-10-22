@@ -177,6 +177,8 @@ import com.dd3boh.outertune.ui.screens.settings.BackupAndRestore
 import com.dd3boh.outertune.ui.screens.settings.ContentSettings
 import com.dd3boh.outertune.ui.screens.settings.DEFAULT_ENABLED_TABS
 import com.dd3boh.outertune.ui.screens.settings.DarkMode
+import com.dd3boh.outertune.ui.screens.settings.DiscordLoginScreen
+import com.dd3boh.outertune.ui.screens.settings.DiscordSettings
 import com.dd3boh.outertune.ui.screens.settings.ExperimentalSettings
 import com.dd3boh.outertune.ui.screens.settings.LocalPlayerSettings
 import com.dd3boh.outertune.ui.screens.settings.LyricsSettings
@@ -1102,6 +1104,12 @@ class MainActivity : ComponentActivity() {
                                 }
                                 composable("settings/backup_restore") {
                                     BackupAndRestore(navController, scrollBehavior)
+                                }
+                                composable("settings/discord") {
+                                    DiscordSettings(navController, scrollBehavior)
+                                }
+                                composable("settings/discord/login") {
+                                    DiscordLoginScreen(navController)
                                 }
                                 composable("settings/local") {
                                     LocalPlayerSettings(navController, scrollBehavior)
