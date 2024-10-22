@@ -18,6 +18,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.PlaylistAdd
 import androidx.compose.material.icons.automirrored.rounded.QueueMusic
 import androidx.compose.material.icons.automirrored.rounded.VolumeUp
 import androidx.compose.material.icons.rounded.ClearAll
@@ -53,6 +54,7 @@ import com.dd3boh.outertune.R
 import com.dd3boh.outertune.constants.AudioNormalizationKey
 import com.dd3boh.outertune.constants.AudioQuality
 import com.dd3boh.outertune.constants.AudioQualityKey
+import com.dd3boh.outertune.constants.AutoLoadMoreKey
 import com.dd3boh.outertune.constants.KeepAliveKey
 import com.dd3boh.outertune.constants.PersistentQueueKey
 import com.dd3boh.outertune.constants.SkipOnErrorKey
@@ -87,6 +89,7 @@ fun PlayerSettings(
     val (stopMusicOnTaskClear, onStopMusicOnTaskClearChange) = rememberPreference(key = StopMusicOnTaskClearKey, defaultValue = false)
     val (minPlaybackDur, onMinPlaybackDurChange) = rememberPreference(minPlaybackDurKey, defaultValue = 30)
     val (keepAlive, onKeepAliveChange) = rememberPreference(key = KeepAliveKey, defaultValue = false)
+    val (autoLoadMore, onAutoLoadMoreChange) = rememberPreference(AutoLoadMoreKey, defaultValue = true)
 
     var showMinPlaybackDur by remember {
         mutableStateOf(false)
@@ -186,13 +189,6 @@ fun PlayerSettings(
         PreferenceGroupTitle(
             title = "Interface"
         )
-        SwitchPreference(
-            title = { Text(stringResource(R.string.persistent_queue)) },
-            description = stringResource(R.string.persistent_queue_desc),
-            icon = { Icon(Icons.AutoMirrored.Rounded.QueueMusic, null) },
-            checked = persistentQueue,
-            onCheckedChange = onPersistentQueueChange
-        )
         // lyrics settings
         PreferenceEntry(
             title = { Text(stringResource(R.string.lyrics_settings_title)) },
@@ -232,6 +228,20 @@ fun PlayerSettings(
             icon = { Icon(painterResource(R.drawable.skip_next), null) },
             checked = skipSilence,
             onCheckedChange = onSkipSilenceChange
+        )
+        SwitchPreference(
+            title = { Text(stringResource(R.string.persistent_queue)) },
+            description = stringResource(R.string.persistent_queue_desc),
+            icon = { Icon(Icons.AutoMirrored.Rounded.QueueMusic, null) },
+            checked = persistentQueue,
+            onCheckedChange = onPersistentQueueChange
+        )
+        SwitchPreference(
+            title = { Text(stringResource(R.string.auto_load_more)) },
+            description = stringResource(R.string.auto_load_more_desc),
+            icon = { Icon(Icons.AutoMirrored.Rounded.PlaylistAdd,  null) },
+            checked = autoLoadMore,
+            onCheckedChange = onAutoLoadMoreChange
         )
         SwitchPreference(
             title = { Text(stringResource(R.string.auto_skip_next_on_error)) },

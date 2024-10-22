@@ -55,6 +55,7 @@ import com.dd3boh.outertune.R
 import com.dd3boh.outertune.constants.AudioNormalizationKey
 import com.dd3boh.outertune.constants.AudioQuality
 import com.dd3boh.outertune.constants.AudioQualityKey
+import com.dd3boh.outertune.constants.AutoLoadMoreKey
 import com.dd3boh.outertune.constants.DiscordTokenKey
 import com.dd3boh.outertune.constants.EnableDiscordRPCKey
 import com.dd3boh.outertune.constants.LastPosKey
@@ -88,6 +89,7 @@ import com.dd3boh.outertune.models.QueueBoard
 import com.dd3boh.outertune.models.isShuffleEnabled
 import com.dd3boh.outertune.models.toMediaMetadata
 import com.dd3boh.outertune.playback.PlayerConnection.Companion.queueBoard
+import com.dd3boh.outertune.playback.queues.EmptyQueue
 import com.dd3boh.outertune.playback.queues.Queue
 import com.dd3boh.outertune.playback.queues.YouTubeQueue
 import com.dd3boh.outertune.utils.CoilBitmapLoader
@@ -183,6 +185,8 @@ class MusicService : MediaLibraryService(),
 
     private var isAudioEffectSessionOpened = false
 
+    private var currentQueue: Queue = EmptyQueue
+
     private var discordRpc: DiscordRPC? = null
 
     var consecutivePlaybackErr = 0
@@ -268,6 +272,12 @@ class MusicService : MediaLibraryService(),
 
                     // start playback again on seek
                     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                        if (dataStore.get(AutoLoadMoreKey, true) &&
+                            reason != Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT &&
+                            player.playbackState != STATE_IDLE &&
+                            player.mediaItemCount - player.currentMediaItemIndex <= 5 &&
+                            currentQueue.hasNextPage()
+                        )
                         super.onMediaItemTransition(mediaItem, reason)
                         // +2 when and error happens, and -1 when transition. Thus when error, number increments by 1, else doesn't change
                         if (consecutivePlaybackErr > 0) {
