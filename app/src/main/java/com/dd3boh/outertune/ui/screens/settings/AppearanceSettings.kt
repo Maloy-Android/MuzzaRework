@@ -313,6 +313,7 @@ fun AppearanceSettings(
                     PlayerBackgroundStyle.DEFAULT -> stringResource(R.string.player_background_default)
                     PlayerBackgroundStyle.GRADIENT -> stringResource(R.string.player_background_gradient)
                     PlayerBackgroundStyle.BLUR -> stringResource(R.string.player_background_blur)
+                    PlayerBackgroundStyle.BLUROV -> stringResource(R.string.blurmv)
                 }
             },
             values = availableBackgroundStyles
@@ -560,7 +561,7 @@ enum class DarkMode {
 }
 
 enum class PlayerBackgroundStyle {
-    DEFAULT, GRADIENT, BLUR
+    DEFAULT, GRADIENT, BLUR , BLUROV
 }
 
 /**

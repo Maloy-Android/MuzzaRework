@@ -8,8 +8,13 @@ import android.widget.Toast
 import android.os.PowerManager
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -71,6 +76,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -565,6 +571,18 @@ fun BottomSheetPlayer(
             if (playerBackground == PlayerBackgroundStyle.BLUR) {
                 if (mediaMetadata?.isLocal == true) {
                     mediaMetadata?.let {
+                        val infiniteTransition = rememberInfiniteTransition(label = "")
+                        val rotation by infiniteTransition.animateFloat(
+                            initialValue = 0f,
+                            targetValue = 360f,
+                            animationSpec = infiniteRepeatable(
+                                animation = tween(
+                                    durationMillis = 100000,
+                                    easing = FastOutSlowInEasing // Easing suave
+                                ),
+                                repeatMode = RepeatMode.Restart
+                            ), label = ""
+                        )
                         AsyncLocalImage(
                             image = { getLocalThumbnail(it.localPath) },
                             contentDescription = null,
@@ -572,9 +590,22 @@ fun BottomSheetPlayer(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .blur(200.dp)
+                                .rotate(rotation)
                         )
                     }
                 } else {
+                    val infiniteTransition = rememberInfiniteTransition(label = "")
+                    val rotation by infiniteTransition.animateFloat(
+                        initialValue = 0f,
+                        targetValue = 360f,
+                        animationSpec = infiniteRepeatable(
+                            animation = tween(
+                                durationMillis = 100000,
+                                easing = FastOutSlowInEasing // Easing suave
+                            ),
+                            repeatMode = RepeatMode.Restart
+                        ), label = ""
+                    )
                     AsyncImage(
                         model = mediaMetadata?.thumbnailUrl,
                         contentDescription = null,
@@ -582,14 +613,61 @@ fun BottomSheetPlayer(
                         modifier = Modifier
                             .fillMaxSize()
                             .blur(200.dp)
+                            .rotate(rotation)
                     )
                 }
+            }
+            if (playerBackground == PlayerBackgroundStyle.BLUROV) {
+                if (mediaMetadata?.isLocal == true) {
+                    mediaMetadata?.let {
+                        val infiniteTransition = rememberInfiniteTransition(label = "")
+                        val rotation by infiniteTransition.animateFloat(
+                            initialValue = 0f,
+                            targetValue = 360f,
+                            animationSpec = infiniteRepeatable(
+                                animation = tween(
+                                    durationMillis = 100000,
+                                    easing = FastOutSlowInEasing // Easing suave
+                                ),
+                                repeatMode = RepeatMode.Restart
+                            ), label = ""
+                        )
+                        AsyncLocalImage(
+                            image = { getLocalThumbnail(it.localPath) },
+                            contentDescription = null,
+                            contentScale = ContentScale.FillBounds,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .blur(200.dp)
+                                .rotate(rotation)
+                        )
+                    }
+                } else {
+                    val infiniteTransition = rememberInfiniteTransition(label = "")
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.3f))
-                )
+
+                    val rotation by infiniteTransition.animateFloat(
+                        initialValue = 0f,
+                        targetValue = 360f,
+                        animationSpec = infiniteRepeatable(
+                            animation = tween(
+                                durationMillis = 100000,
+                                easing = FastOutSlowInEasing // Easing suave
+                            ),
+                            repeatMode = RepeatMode.Restart
+                        ), label = ""
+                    )
+                    AsyncImage(
+                        model = mediaMetadata?.thumbnailUrl,
+                        contentDescription = null,
+                        contentScale = ContentScale.FillBounds,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .blur(200.dp)
+                            .alpha(0.8f)
+                            .rotate(rotation)
+                    )
+                }
             } else if (playerBackground == PlayerBackgroundStyle.GRADIENT && gradientColors.size >= 2) {
                 Box(
                     modifier = Modifier
