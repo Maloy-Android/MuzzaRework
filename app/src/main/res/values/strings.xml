@@ -341,6 +341,9 @@
 
 <!-- Home -->
     <string name="recent_activity">Recent activity</string>
+    <string name="not_internet">No Internet Connection</string>
+    <string name="internet_required">It looks like you have no Internet connection. Please check your network.</string>
+    <string name="downloadspage">Go to downloads</string>
 <!-- Queue -->
     <string name="song_added_to_queue">\"%s\" added to queue</string>
     <string name="create_queue">New queue</string>
