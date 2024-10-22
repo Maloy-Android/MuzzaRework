@@ -720,7 +720,7 @@ class MainActivity : ComponentActivity() {
                                                 imageVector = Icons.Rounded.Home,
                                                 contentDescription = "home",
                                                 modifier = Modifier
-                                                    .size(15.dp)
+                                                    .size(24.dp)
                                                     .clickable {
                                                         navController.navigate("home") //
                                                     }
