@@ -1,9 +1,11 @@
 package com.dd3boh.outertune.ui.screens.settings
 
 import android.os.Build
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -134,6 +136,11 @@ fun AppearanceSettings(
 
     val availableBackgroundStyles = PlayerBackgroundStyle.entries.filter {
         it != PlayerBackgroundStyle.BLUR || Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+    }
+
+    val isSystemInDarkTheme = isSystemInDarkTheme()
+    val useDarkTheme = remember(darkMode, isSystemInDarkTheme) {
+        if (darkMode == DarkMode.AUTO) isSystemInDarkTheme else darkMode == DarkMode.ON
     }
 
     // configurable tabs
@@ -323,12 +330,14 @@ fun AppearanceSettings(
                 }
             }
         )
-        SwitchPreference(
-            title = { Text(stringResource(R.string.pure_black)) },
-            icon = { Icon(Icons.Rounded.Contrast, null) },
-            checked = pureBlack,
-            onCheckedChange = onPureBlackChange
-        )
+        AnimatedVisibility(useDarkTheme) {
+            SwitchPreference(
+                title = { Text(stringResource(R.string.pure_black)) },
+                icon = { Icon(Icons.Rounded.Contrast, null) },
+                checked = pureBlack,
+                onCheckedChange = onPureBlackChange
+            )
+        }
 
         SwitchPreference(
             title = { Text(stringResource(R.string.enable_swipe_thumbnail)) },
@@ -394,13 +403,15 @@ fun AppearanceSettings(
             onCheckedChange = onShowLikedAndDownloadedPlaylistChange
         )
 
-        PreferenceEntry(
-            title = { Text("Tab arrangement") },
-            icon = { Icon(Icons.Rounded.Reorder, null) },
-            onClick = {
-                showTabArrangement = true
-            }
-        )
+        AnimatedVisibility(visible = !newInterfaceStyle) {
+            PreferenceEntry(
+                title = { Text("Tab arrangement") },
+                icon = { Icon(Icons.Rounded.Reorder, null) },
+                onClick = {
+                    showTabArrangement = true
+                }
+            )
+        }
 
         if (showTabArrangement)
             ActionPromptDialog(
