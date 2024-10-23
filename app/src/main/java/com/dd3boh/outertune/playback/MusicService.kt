@@ -680,19 +680,14 @@ class MusicService : MediaLibraryService(),
         CacheDataSource.Factory()
             .setCache(downloadCache)
             .setUpstreamDataSourceFactory(
-                CacheDataSource.Factory()
-                    .setCache(playerCache)
-                    .setUpstreamDataSourceFactory(
-                        DefaultDataSource.Factory(
-                            this,
-                            OkHttpDataSource.Factory(
-                                OkHttpClient.Builder()
-                                    .proxy(YouTube.proxy)
-                                    .build()
-                            )
-                        )
+                DefaultDataSource.Factory(
+                    this,
+                    OkHttpDataSource.Factory(
+                        OkHttpClient.Builder()
+                            .proxy(YouTube.proxy)
+                            .build()
                     )
-                    .setUpstreamDataSourceFactory(null) // write is handled externally
+                )
             )
             .setCacheWriteDataSinkFactory(null)
             .setFlags(FLAG_IGNORE_CACHE_ON_ERROR)
