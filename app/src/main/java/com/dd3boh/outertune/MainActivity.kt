@@ -70,6 +70,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -1097,7 +1098,8 @@ class MainActivity : ComponentActivity() {
                                     YouTubeBrowseScreen(navController, scrollBehavior)
                                 }
                                 composable("settings") {
-                                    SettingsScreen(navController, scrollBehavior)
+                                    val latestVersion by mutableLongStateOf(BuildConfig.VERSION_CODE.toLong())
+                                    SettingsScreen(latestVersion, navController, scrollBehavior)
                                 }
                                 composable("settings/appearance") {
                                     AppearanceSettings(navController, scrollBehavior)
