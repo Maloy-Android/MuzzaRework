@@ -399,6 +399,7 @@
 
     <!-- Content settings -->
     <string name="ytm_sync">Automatically sync with your YouTube Music account</string>
+    <string name="app_language">App language (beta)</string>
 
     <!-- Player settings -->
     <string name="keep_alive_title">Prevent system killing app</string>
