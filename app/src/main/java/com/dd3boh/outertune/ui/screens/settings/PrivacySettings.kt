@@ -13,6 +13,7 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.ManageSearch
 import androidx.compose.material.icons.rounded.ClearAll
 import androidx.compose.material.icons.rounded.History
+import androidx.compose.material.icons.rounded.Screenshot
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -32,6 +33,7 @@ import androidx.navigation.NavController
 import com.dd3boh.outertune.LocalDatabase
 import com.dd3boh.outertune.LocalPlayerAwareWindowInsets
 import com.dd3boh.outertune.R
+import com.dd3boh.outertune.constants.DisableScreenshotKey
 import com.dd3boh.outertune.constants.PauseListenHistoryKey
 import com.dd3boh.outertune.constants.PauseSearchHistoryKey
 import com.dd3boh.outertune.ui.component.DefaultDialog
@@ -50,6 +52,7 @@ fun PrivacySettings(
     val database = LocalDatabase.current
     val (pauseListenHistory, onPauseListenHistoryChange) = rememberPreference(key = PauseListenHistoryKey, defaultValue = false)
     val (pauseSearchHistory, onPauseSearchHistoryChange) = rememberPreference(key = PauseSearchHistoryKey, defaultValue = false)
+    val (disableScreenshot, onDisableScreenshotChange) = rememberPreference(key = DisableScreenshotKey, defaultValue = false)
 
     var showClearListenHistoryDialog by remember {
         mutableStateOf(false)
@@ -148,6 +151,13 @@ fun PrivacySettings(
             title = { Text(stringResource(R.string.clear_search_history)) },
             icon = { Icon(Icons.Rounded.ClearAll, null) },
             onClick = { showClearSearchHistoryDialog = true }
+        )
+        SwitchPreference(
+            title = { Text(stringResource(R.string.disable_screenshot)) },
+            description = stringResource(R.string.disable_screenshot_desc),
+            icon = { Icon(Icons.Rounded.Screenshot, null) },
+            checked = disableScreenshot,
+            onCheckedChange = onDisableScreenshotChange
         )
     }
 
