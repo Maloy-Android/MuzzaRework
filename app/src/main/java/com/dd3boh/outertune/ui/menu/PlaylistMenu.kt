@@ -1,3 +1,5 @@
+@file:Suppress("UNREACHABLE_CODE")
+
 package com.dd3boh.outertune.ui.menu
 
 import android.content.Intent
@@ -16,6 +18,7 @@ import androidx.compose.material.icons.rounded.PlaylistRemove
 import androidx.compose.material.icons.rounded.Radio
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material.icons.rounded.Shuffle
+import androidx.compose.material.icons.rounded.Sync
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -49,6 +52,7 @@ import com.dd3boh.outertune.LocalPlayerConnection
 import com.dd3boh.outertune.R
 import com.dd3boh.outertune.db.entities.Playlist
 import com.dd3boh.outertune.db.entities.PlaylistSong
+import com.dd3boh.outertune.db.entities.PlaylistSongMap
 import com.dd3boh.outertune.db.entities.Song
 import com.dd3boh.outertune.extensions.toMediaItem
 import com.dd3boh.outertune.models.toMediaMetadata
@@ -63,7 +67,9 @@ import com.dd3boh.outertune.ui.component.GridMenuItem
 import com.dd3boh.outertune.ui.component.PlaylistListItem
 import com.dd3boh.outertune.ui.component.TextFieldDialog
 import com.zionhuang.innertube.YouTube
+import com.zionhuang.innertube.models.SongItem
 import com.zionhuang.innertube.models.WatchEndpoint
+import com.zionhuang.innertube.utils.completed
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -386,6 +392,33 @@ fun PlaylistMenu(
                 title = R.string.delete
             ) {
                 showDeletePlaylistDialog = true
+            }
+            if (playlist.playlist.browseId != null) {
+                GridMenuItem(
+                    icon = Icons.Rounded.Sync,
+                    title = R.string.sync
+                ) {
+                    onDismiss()
+                    coroutineScope.launch(Dispatchers.IO) {
+                        val playlistPage =
+                            YouTube.playlist(playlist.playlist.browseId).completed().getOrNull()
+                                ?: return@launch
+                        database.transaction {
+                            clearPlaylist(playlist.id)
+                            playlistPage.songs
+                                .map(SongItem::toMediaMetadata)
+                                .onEach(::insert)
+                                .mapIndexed { position, song ->
+                                    PlaylistSongMap(
+                                        songId = song.id,
+                                        playlistId = playlist.id,
+                                        position = position
+                                    )
+                                }
+                                .forEach(::insert)
+                        }
+                    }
+                }
             }
         }
 
