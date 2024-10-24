@@ -45,6 +45,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.dd3boh.outertune.LocalPlayerAwareWindowInsets
+import com.dd3boh.outertune.NotificationPermissionPreference
 import com.dd3boh.outertune.R
 import com.dd3boh.outertune.constants.AccountChannelHandleKey
 import com.dd3boh.outertune.constants.AccountEmailKey
@@ -152,6 +153,8 @@ fun ContentSettings(
             title = stringResource(R.string.app_language),
         )
         LanguageSelector()
+
+        NotificationPermissionPreference()
 
         PreferenceGroupTitle(
             title = "PROXY"
