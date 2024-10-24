@@ -571,18 +571,6 @@ fun BottomSheetPlayer(
             if (playerBackground == PlayerBackgroundStyle.BLUR) {
                 if (mediaMetadata?.isLocal == true) {
                     mediaMetadata?.let {
-                        val infiniteTransition = rememberInfiniteTransition(label = "")
-                        val rotation by infiniteTransition.animateFloat(
-                            initialValue = 0f,
-                            targetValue = 360f,
-                            animationSpec = infiniteRepeatable(
-                                animation = tween(
-                                    durationMillis = 100000,
-                                    easing = FastOutSlowInEasing // Easing suave
-                                ),
-                                repeatMode = RepeatMode.Restart
-                            ), label = ""
-                        )
                         AsyncLocalImage(
                             image = { getLocalThumbnail(it.localPath) },
                             contentDescription = null,
@@ -590,22 +578,9 @@ fun BottomSheetPlayer(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .blur(200.dp)
-                                .rotate(rotation)
                         )
                     }
                 } else {
-                    val infiniteTransition = rememberInfiniteTransition(label = "")
-                    val rotation by infiniteTransition.animateFloat(
-                        initialValue = 0f,
-                        targetValue = 360f,
-                        animationSpec = infiniteRepeatable(
-                            animation = tween(
-                                durationMillis = 100000,
-                                easing = FastOutSlowInEasing // Easing suave
-                            ),
-                            repeatMode = RepeatMode.Restart
-                        ), label = ""
-                    )
                     AsyncImage(
                         model = mediaMetadata?.thumbnailUrl,
                         contentDescription = null,
@@ -613,7 +588,6 @@ fun BottomSheetPlayer(
                         modifier = Modifier
                             .fillMaxSize()
                             .blur(200.dp)
-                            .rotate(rotation)
                     )
                 }
             }
