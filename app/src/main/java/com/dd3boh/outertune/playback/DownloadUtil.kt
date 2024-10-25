@@ -7,6 +7,7 @@ import androidx.core.net.toUri
 import androidx.media3.common.PlaybackException
 import androidx.media3.database.DatabaseProvider
 import androidx.media3.datasource.ResolvingDataSource
+import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.offline.Download
@@ -43,13 +44,17 @@ class DownloadUtil @Inject constructor(
     private val audioQuality by enumPreference(context, AudioQualityKey, AudioQuality.AUTO)
     private val songUrlCache = HashMap<String, Pair<String, Long>>()
     private val dataSourceFactory = ResolvingDataSource.Factory(
-        OkHttpDataSource.Factory(
-            OkHttpClient.Builder()
-                .proxy(YouTube.proxy)
-                .build()
-        )
+        CacheDataSource.Factory()
+            .setUpstreamDataSourceFactory(
+                OkHttpDataSource.Factory(
+                    OkHttpClient.Builder()
+                        .proxy(YouTube.proxy)
+                        .build()
+                )
+            )
     ) { dataSpec ->
         val mediaId = dataSpec.key ?: error("No media id")
+        val length = if (dataSpec.length >= 0) dataSpec.length else 1
         if (mediaId.startsWith("LA")) { // downloads are hidden for local songs, this is a last resort
             throw PlaybackException("Local song are non-downloadable", null, PlaybackException.ERROR_CODE_UNSPECIFIED)
         }
