@@ -143,7 +143,6 @@ val LibrarySortTypeKey = stringPreferencesKey("librarySortType")
 val LibrarySortDescendingKey = booleanPreferencesKey("librarySortDescending")
 val ArtistSongSortTypeKey = stringPreferencesKey("artistSongSortType")
 val ArtistSongSortDescendingKey = booleanPreferencesKey("artistSongSortDescending")
-val MaxSongCacheSizeKey = intPreferencesKey("maxSongCacheSize")
 
 val SongFilterKey = stringPreferencesKey("songFilter")
 val ArtistFilterKey = stringPreferencesKey("artistFilter")

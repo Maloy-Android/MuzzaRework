@@ -34,7 +34,6 @@ import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR
-import androidx.media3.datasource.cache.CacheWriter
 import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.DefaultRenderersFactory
@@ -61,7 +60,6 @@ import com.dd3boh.outertune.constants.DiscordTokenKey
 import com.dd3boh.outertune.constants.EnableDiscordRPCKey
 import com.dd3boh.outertune.constants.LastPosKey
 import com.dd3boh.outertune.constants.KeepAliveKey
-import com.dd3boh.outertune.constants.MaxSongCacheSizeKey
 import com.dd3boh.outertune.constants.MediaSessionConstants.CommandToggleLike
 import com.dd3boh.outertune.constants.MediaSessionConstants.CommandToggleRepeatMode
 import com.dd3boh.outertune.constants.MediaSessionConstants.CommandToggleShuffle
@@ -79,7 +77,6 @@ import com.dd3boh.outertune.db.entities.FormatEntity
 import com.dd3boh.outertune.db.entities.LyricsEntity
 import com.dd3boh.outertune.db.entities.RelatedSongMap
 import com.dd3boh.outertune.di.DownloadCache
-import com.dd3boh.outertune.di.PlayerCache
 import com.dd3boh.outertune.extensions.SilentHandler
 import com.dd3boh.outertune.extensions.collect
 import com.dd3boh.outertune.extensions.collectLatest
@@ -178,10 +175,6 @@ class MusicService : MediaLibraryService(),
     val playerVolume = MutableStateFlow(dataStore.get(PlayerVolumeKey, 1f).coerceIn(0f, 1f))
 
     lateinit var sleepTimer: SleepTimer
-
-    @Inject
-    @PlayerCache
-    lateinit var playerCache: SimpleCache
 
     @Inject
     @DownloadCache
@@ -680,19 +673,14 @@ class MusicService : MediaLibraryService(),
         CacheDataSource.Factory()
             .setCache(downloadCache)
             .setUpstreamDataSourceFactory(
-                CacheDataSource.Factory()
-                    .setCache(playerCache)
-                    .setUpstreamDataSourceFactory(
-                        DefaultDataSource.Factory(
-                            this,
-                            OkHttpDataSource.Factory(
-                                OkHttpClient.Builder()
-                                    .proxy(YouTube.proxy)
-                                    .build()
-                            )
-                        )
+                DefaultDataSource.Factory(
+                    this,
+                    OkHttpDataSource.Factory(
+                        OkHttpClient.Builder()
+                            .proxy(YouTube.proxy)
+                            .build()
                     )
-                    .setUpstreamDataSourceFactory(null) // write is handled externally
+                )
             )
             .setCacheWriteDataSinkFactory(null)
             .setFlags(FLAG_IGNORE_CACHE_ON_ERROR)
@@ -714,9 +702,7 @@ class MusicService : MediaLibraryService(),
                 return@Factory dataSpec.withUri(Uri.fromFile(File(songPath)))
             }
 
-            if (downloadCache.isCached(mediaId, dataSpec.position, if (dataSpec.length >= 0) dataSpec.length else 1) ||
-                playerCache.isCached(mediaId, dataSpec.position, CHUNK_LENGTH)
-            ) {
+            if (downloadCache.isCached(mediaId, dataSpec.position, if (dataSpec.length >= 0) dataSpec.length else 1)) {
                 scope.launch(Dispatchers.IO) { recoverSong(mediaId) }
                 return@Factory dataSpec
             }
@@ -784,24 +770,7 @@ class MusicService : MediaLibraryService(),
             scope.launch(Dispatchers.IO) { recoverSong(mediaId, playerResponse) }
 
             songUrlCache[mediaId] = format.url!! to playerResponse.streamingData!!.expiresInSeconds * 1000L
-            val resultDataSpec = dataSpec.withUri(format.url!!.toUri()).subrange(dataSpec.uriPositionOffset, CHUNK_LENGTH)
-            if (dataStore[MaxSongCacheSizeKey] == 0) { // cache disabled
-                // null pref will use caching (default caching on)
-                return@Factory resultDataSpec
-            }
-            val cache = CacheDataSource.Factory()
-                .setCache(downloadCache)
-                .setUpstreamDataSourceFactory(
-                    CacheDataSource.Factory()
-                        .setCache(playerCache)
-                        .setUpstreamDataSourceFactory(
-                            DefaultDataSource.Factory(this)
-                        )
-                )
-                .setCacheWriteDataSinkFactory(null)
-                .setFlags(FLAG_IGNORE_CACHE_ON_ERROR)
-            CacheWriter(cache.createDataSource(), resultDataSpec, null, null).cache()
-            resultDataSpec
+            dataSpec.withUri(format.url!!.toUri()).subrange(dataSpec.uriPositionOffset, CHUNK_LENGTH)
         }
     }
 
