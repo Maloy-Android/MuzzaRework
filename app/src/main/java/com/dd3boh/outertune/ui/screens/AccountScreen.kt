@@ -63,7 +63,6 @@ fun AccountScreen(
         ) { item ->
             YouTubeGridItem(
                 item = item,
-                fillMaxWidth = true,
                 modifier = Modifier
                     .combinedClickable(
                         onClick = {
@@ -78,7 +77,9 @@ fun AccountScreen(
                                 )
                             }
                         }
-                    )
+                    ),
+                fillMaxWidth = true,
+                thumbnailRatio = 1f
             )
         }
 
@@ -88,7 +89,6 @@ fun AccountScreen(
         ) { item ->
             YouTubeGridItem(
                 item = item,
-                fillMaxWidth = true,
                 modifier = Modifier
                     .combinedClickable(
                         onClick = {
@@ -103,7 +103,9 @@ fun AccountScreen(
                                 )
                             }
                         }
-                    )
+                    ),
+                fillMaxWidth = true,
+                thumbnailRatio = 1f
             )
         }
 
@@ -113,7 +115,6 @@ fun AccountScreen(
         ) { item ->
             YouTubeGridItem(
                 item = item,
-                fillMaxWidth = true,
                 modifier = Modifier
                     .combinedClickable(
                         onClick = {
@@ -127,7 +128,9 @@ fun AccountScreen(
                                 )
                             }
                         }
-                    )
+                    ),
+                fillMaxWidth = true,
+                thumbnailRatio = 1f
             )
         }
 

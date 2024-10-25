@@ -39,6 +39,7 @@ class HomeViewModel @Inject constructor(
     val explorePage = MutableStateFlow<ExplorePage?>(null)
     val recentActivity = MutableStateFlow<List<YTItem>?>(null)
     val recentPlaylistsDb = MutableStateFlow<List<Playlist>?>(null)
+    val accountPlaylists = MutableStateFlow<List<PlaylistItem>?>(null)
 
     private suspend fun load() {
         quickPicks.value = database.quickPicks().first().shuffled().take(20)
@@ -53,6 +54,14 @@ class HomeViewModel @Inject constructor(
                         list?.plusElement(playlist) ?: listOf(playlist)
                     }
                 }
+            }
+        }
+
+        if (YouTube.cookie != null) { // if logged in
+            YouTube.likedPlaylists().onSuccess {
+                accountPlaylists.value = it
+            }.onFailure {
+                reportException(it)
             }
         }
 

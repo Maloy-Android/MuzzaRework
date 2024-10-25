@@ -134,6 +134,20 @@ object YouTube {
         )
     }
 
+    suspend fun likedPlaylists(): Result<List<PlaylistItem>> = runCatching {
+        val response = innerTube.browse(
+            client = WEB_REMIX,
+            browseId = "FEmusic_liked_playlists",
+            setLogin = true
+        ).body<BrowseResponse>()
+        response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()?.gridRenderer?.items!!
+            .drop(1) // the first item is "create new playlist"
+            .mapNotNull(GridRenderer.Item::musicTwoRowItemRenderer)
+            .mapNotNull {
+                ArtistItemsPage.fromMusicTwoRowItemRenderer(it) as? PlaylistItem
+            }
+    }
+
     suspend fun search(query: String, filter: SearchFilter): Result<SearchResult> = runCatching {
         val response = innerTube.search(WEB_REMIX, query, filter.value).body<SearchResponse>()
         SearchResult(

@@ -61,10 +61,6 @@ fun NewReleaseScreen(
         ) { album ->
             YouTubeGridItem(
                 item = album,
-                isActive = mediaMetadata?.album?.id == album.id,
-                isPlaying = isPlaying,
-                fillMaxWidth = true,
-                coroutineScope = coroutineScope,
                 modifier = Modifier
                     .combinedClickable(
                         onClick = {
@@ -79,7 +75,12 @@ fun NewReleaseScreen(
                                 )
                             }
                         }
-                    )
+                    ),
+                coroutineScope = coroutineScope,
+                isActive = mediaMetadata?.album?.id == album.id,
+                isPlaying = isPlaying,
+                fillMaxWidth = true,
+                thumbnailRatio = 1f
             )
         }
 

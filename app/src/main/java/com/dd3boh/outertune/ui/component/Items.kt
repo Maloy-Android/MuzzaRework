@@ -902,7 +902,7 @@ fun YouTubeGridItem(
     item: YTItem,
     modifier: Modifier = Modifier,
     coroutineScope: CoroutineScope? = null,
-    badges: @Composable RowScope.() -> Unit = {
+    badges: @Composable() (RowScope.() -> Unit) = {
         val database = LocalDatabase.current
         val song by database.song(item.id).collectAsState(initial = null)
         val album by database.album(item.id).collectAsState(initial = null)
@@ -926,6 +926,7 @@ fun YouTubeGridItem(
     isActive: Boolean = false,
     isPlaying: Boolean = false,
     fillMaxWidth: Boolean = false,
+    thumbnailRatio: Float,
 ) = GridItem(
     title = {
         Text(

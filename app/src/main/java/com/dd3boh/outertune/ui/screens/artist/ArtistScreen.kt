@@ -374,13 +374,6 @@ fun ArtistScreen(
                                 ) { item ->
                                     YouTubeGridItem(
                                         item = item,
-                                        isActive = when (item) {
-                                            is SongItem -> mediaMetadata?.id == item.id
-                                            is AlbumItem -> mediaMetadata?.album?.id == item.id
-                                            else -> false
-                                        },
-                                        isPlaying = isPlaying,
-                                        coroutineScope = coroutineScope,
                                         modifier = Modifier
                                             .combinedClickable(
                                                 onClick = {
@@ -427,7 +420,15 @@ fun ArtistScreen(
                                                     }
                                                 }
                                             )
-                                            .animateItemPlacement()
+                                            .animateItemPlacement(),
+                                        coroutineScope = coroutineScope,
+                                        isActive = when (item) {
+                                            is SongItem -> mediaMetadata?.id == item.id
+                                            is AlbumItem -> mediaMetadata?.album?.id == item.id
+                                            else -> false
+                                        },
+                                        isPlaying = isPlaying,
+                                        thumbnailRatio = 1f
                                     )
                                 }
                             }
