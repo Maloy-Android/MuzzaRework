@@ -49,14 +49,12 @@ import com.dd3boh.outertune.LocalDatabase
 import com.dd3boh.outertune.LocalPlayerAwareWindowInsets
 import com.dd3boh.outertune.LocalPlayerConnection
 import com.dd3boh.outertune.R
-import com.dd3boh.outertune.constants.HistorySource
 import com.dd3boh.outertune.constants.InnerTubeCookieKey
 import com.dd3boh.outertune.db.entities.EventWithSong
 import com.dd3boh.outertune.extensions.togglePlayPause
 import com.dd3boh.outertune.models.toMediaMetadata
 import com.dd3boh.outertune.playback.queues.ListQueue
 import com.dd3boh.outertune.playback.queues.YouTubeQueue
-import com.dd3boh.outertune.ui.component.ChipsRow
 import com.dd3boh.outertune.ui.component.IconButton
 import com.dd3boh.outertune.ui.component.LocalMenuState
 import com.dd3boh.outertune.ui.component.NavigationTitle
@@ -87,8 +85,9 @@ fun HistoryScreen(
     val isPlaying by playerConnection.isPlaying.collectAsState()
     val mediaMetadata by playerConnection.mediaMetadata.collectAsState()
 
-    val historySource by viewModel.historySource.collectAsState()
     val events by viewModel.events.collectAsState()
+    val historyPage by viewModel.historyPage
+
     val eventIndex: Map<Long, EventWithSong> by remember(events) {
         derivedStateOf {
             events.flatMap { it.value }.associateBy { it.event.id }
@@ -108,9 +107,7 @@ fun HistoryScreen(
     if (inSelectMode) {
         BackHandler(onBack = onExitSelectionMode)
     }
-
     // no multiselect for remote hisory (yet)
-    val historyPage by viewModel.historyPage
 
     val innerTubeCookie by rememberPreference(InnerTubeCookieKey, "")
     val isLoggedIn = remember(innerTubeCookie) {
@@ -131,20 +128,7 @@ fun HistoryScreen(
         contentPadding = LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom).asPaddingValues(),
         modifier = Modifier.windowInsetsPadding(LocalPlayerAwareWindowInsets.current.only(WindowInsetsSides.Top))
     ) {
-        item {
-            ChipsRow(
-                chips = if (isLoggedIn) listOf(
-                    HistorySource.LOCAL to stringResource(R.string.local_history),
-                    HistorySource.REMOTE to stringResource(R.string.remote_history),
-                ) else {
-                    listOf(HistorySource.LOCAL to stringResource(R.string.local_history))
-                },
-                currentValue = historySource,
-                onValueUpdate = { viewModel.historySource.value = it }
-            )
-        }
-
-        if (historySource == HistorySource.REMOTE && isLoggedIn) {
+        if (isLoggedIn) {
             historyPage?.sections?.forEach { section ->
                 stickyHeader {
                     NavigationTitle(
@@ -221,7 +205,13 @@ fun HistoryScreen(
             events.forEach { (dateAgo, eventsGroup) ->
                 stickyHeader {
                     NavigationTitle(
-                        title = dateAgoToString(dateAgo),
+                        title = when (dateAgo) {
+                            DateAgo.Today -> stringResource(R.string.today)
+                            DateAgo.Yesterday -> stringResource(R.string.yesterday)
+                            DateAgo.ThisWeek -> stringResource(R.string.this_week)
+                            DateAgo.LastWeek -> stringResource(R.string.last_week)
+                            is DateAgo.Other -> dateAgo.date.format(DateTimeFormatter.ofPattern("yyyy/MM"))
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(MaterialTheme.colorScheme.surface)
@@ -233,7 +223,6 @@ fun HistoryScreen(
                             .background(MaterialTheme.colorScheme.surface)
                     ) {
                         Spacer(modifier = Modifier.width(16.dp)) // why compose no margin...
-
                         if (inSelectMode) {
                             SelectHeader(
                                 selectedItems = selection.mapNotNull { eventId ->
@@ -261,7 +250,6 @@ fun HistoryScreen(
                                 },
                             )
                         }
-
                         Spacer(modifier = Modifier.width(16.dp))
                     }
                 }
@@ -276,7 +264,6 @@ fun HistoryScreen(
                             selection.remove(event.event.id)
                         }
                     }
-
                     SongListItem(
                         song = event.song,
                         isActive = event.song.id == mediaMetadata?.id,
