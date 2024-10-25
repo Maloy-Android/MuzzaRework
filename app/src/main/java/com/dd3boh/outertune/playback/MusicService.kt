@@ -34,6 +34,7 @@ import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR
+import androidx.media3.datasource.cache.CacheWriter
 import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.DefaultRenderersFactory
@@ -708,7 +709,9 @@ class MusicService : MediaLibraryService(),
                 return@Factory dataSpec.withUri(Uri.fromFile(File(songPath)))
             }
 
-            if (downloadCache.isCached(mediaId, dataSpec.position, if (dataSpec.length >= 0) dataSpec.length else 1)) {
+            if (downloadCache.isCached(mediaId, dataSpec.position, if (dataSpec.length >= 0) dataSpec.length else 1) ||
+                playerCache.isCached(mediaId, dataSpec.position, CHUNK_LENGTH)
+            ) {
                 scope.launch(Dispatchers.IO) { recoverSong(mediaId) }
                 return@Factory dataSpec
             }
@@ -776,7 +779,24 @@ class MusicService : MediaLibraryService(),
             scope.launch(Dispatchers.IO) { recoverSong(mediaId, playerResponse) }
 
             songUrlCache[mediaId] = format.url!! to playerResponse.streamingData!!.expiresInSeconds * 1000L
-            dataSpec.withUri(format.url!!.toUri()).subrange(dataSpec.uriPositionOffset, CHUNK_LENGTH)
+            val resultDataSpec = dataSpec.withUri(format.url!!.toUri()).subrange(dataSpec.uriPositionOffset, CHUNK_LENGTH)
+            if (dataStore[MaxSongCacheSizeKey] == 0) { // cache disabled
+                // null pref will use caching (default caching on)
+                return@Factory resultDataSpec
+            }
+            val cache = CacheDataSource.Factory()
+                .setCache(downloadCache)
+                .setUpstreamDataSourceFactory(
+                    CacheDataSource.Factory()
+                        .setCache(playerCache)
+                        .setUpstreamDataSourceFactory(
+                            DefaultDataSource.Factory(this)
+                        )
+                )
+                .setCacheWriteDataSinkFactory(null)
+                .setFlags(FLAG_IGNORE_CACHE_ON_ERROR)
+            CacheWriter(cache.createDataSource(), resultDataSpec, null, null).cache()
+            resultDataSpec
         }
     }
 
@@ -802,7 +822,7 @@ class MusicService : MediaLibraryService(),
     override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
         if (player.shuffleModeEnabled) {
             triggerShuffle()
-            player.shuffleModeEnabled = false
+        player.shuffleModeEnabled = false
         }
     }
 
