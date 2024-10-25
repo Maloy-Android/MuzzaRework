@@ -18,6 +18,7 @@ import com.dd3boh.outertune.constants.AudioQualityKey
 import com.dd3boh.outertune.db.MusicDatabase
 import com.dd3boh.outertune.db.entities.FormatEntity
 import com.dd3boh.outertune.di.DownloadCache
+import com.dd3boh.outertune.di.PlayerCache
 import com.dd3boh.outertune.utils.enumPreference
 import com.zionhuang.innertube.YouTube
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -39,12 +40,14 @@ class DownloadUtil @Inject constructor(
     val database: MusicDatabase,
     val databaseProvider: DatabaseProvider,
     @DownloadCache val downloadCache: SimpleCache,
+    @PlayerCache val playerCache: SimpleCache,
 ) {
     private val connectivityManager = context.getSystemService<ConnectivityManager>()!!
     private val audioQuality by enumPreference(context, AudioQualityKey, AudioQuality.AUTO)
     private val songUrlCache = HashMap<String, Pair<String, Long>>()
     private val dataSourceFactory = ResolvingDataSource.Factory(
         CacheDataSource.Factory()
+            .setCache(playerCache)
             .setUpstreamDataSourceFactory(
                 OkHttpDataSource.Factory(
                     OkHttpClient.Builder()
@@ -57,6 +60,10 @@ class DownloadUtil @Inject constructor(
         val length = if (dataSpec.length >= 0) dataSpec.length else 1
         if (mediaId.startsWith("LA")) { // downloads are hidden for local songs, this is a last resort
             throw PlaybackException("Local song are non-downloadable", null, PlaybackException.ERROR_CODE_UNSPECIFIED)
+        }
+
+        if (playerCache.isCached(mediaId, dataSpec.position, length)) {
+            return@Factory dataSpec
         }
 
         songUrlCache[mediaId]?.takeIf { it.second < System.currentTimeMillis() }?.let {

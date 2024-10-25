@@ -86,6 +86,7 @@ val LyricTrimKey = booleanPreferencesKey("lyricTrim")
  * Storage
  */
 val MaxImageCacheSizeKey = intPreferencesKey("maxImageCacheSize")
+val MaxSongCacheSizeKey = intPreferencesKey("maxSongCacheSize")
 
 
 /**
