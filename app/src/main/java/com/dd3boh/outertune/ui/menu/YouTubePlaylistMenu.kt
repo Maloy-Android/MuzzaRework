@@ -261,15 +261,7 @@ fun YouTubePlaylistMenu(
                 icon = Icons.Rounded.PlayArrow,
                 title = R.string.play
             ) {
-                println("Play: ${it.playlistId}, ${it.params}")
-                playerConnection.playQueue(
-                    ListQueue(
-                        playlistId = playlist.playEndpoint!!.playlistId,
-                        title = playlist.title,
-                        items = songs.map { it.toMediaMetadata() },
-                    )
-                )
-
+                playerConnection.playQueue(YouTubeQueue(it))
                 onDismiss()
             }
         }
@@ -279,14 +271,7 @@ fun YouTubePlaylistMenu(
                 icon = Icons.Rounded.Shuffle,
                 title = R.string.shuffle
             ) {
-                println("Shuffle: id: ${shuffleEndpoint.playlistId}, params: ${shuffleEndpoint.params}")
-                playerConnection.playQueue(
-                    ListQueue(
-                        playlistId = playlist.playEndpoint!!.playlistId,
-                        title = playlist.title,
-                        items = songs.map { it.toMediaMetadata() }.shuffled(),
-                    )
-                )
+                playerConnection.playQueue(YouTubeQueue(playlist.shuffleEndpoint!!))
                 onDismiss()
             }
         }
