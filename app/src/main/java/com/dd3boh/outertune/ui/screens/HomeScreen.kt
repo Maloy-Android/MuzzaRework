@@ -1,6 +1,7 @@
 package com.dd3boh.outertune.ui.screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Box
@@ -108,6 +109,8 @@ fun HomeScreen(
     val queuePlaylistId by playerConnection.queuePlaylistId.collectAsState()
 
     val quickPicks by viewModel.quickPicks.collectAsState()
+    val forgottenFavorite by viewModel.forgottenFavorite.collectAsState()
+    val forgottenFavoritesLazyGridState = rememberLazyGridState()
     val explorePage by viewModel.explorePage.collectAsState()
     val recentActivity by viewModel.recentActivity.collectAsState()
     val recentPlaylistsDb by viewModel.recentPlaylistsDb.collectAsState()
@@ -121,6 +124,13 @@ fun HomeScreen(
     val isLoggedIn = remember(innerTubeCookie) {
         "SAPISID" in parseCookieString(innerTubeCookie)
     }
+
+    val snapLayoutInfoProviderForgottenFavorite =
+        remember(forgottenFavoritesLazyGridState) {
+            SnapLayoutInfoProvider(
+                lazyGridState = forgottenFavoritesLazyGridState,
+            )
+        }
 
     val scope = rememberCoroutineScope()
     val coroutineScope = rememberCoroutineScope()
@@ -408,6 +418,79 @@ fun HomeScreen(
                                     },
                                     modifier = Modifier
                                         .width(horizontalLazyGridItemWidth)
+                                        .clickable {
+                                            if (song!!.id == mediaMetadata?.id) {
+                                                playerConnection.player.togglePlayPause()
+                                            } else {
+                                                playerConnection.playQueue(
+                                                    YouTubeQueue(
+                                                        WatchEndpoint(videoId = song!!.id),
+                                                        song!!.toMediaMetadata()
+                                                    )
+                                                )
+                                            }
+                                        }
+                                )
+                            }
+                        }
+                    }
+                }
+
+                forgottenFavorite?.let { forgottenFavorite ->
+                    if (forgottenFavorite.isNotEmpty() && forgottenFavorite.size > 5) {
+                        NavigationTitle(
+                            title = stringResource(R.string.forgotten_favorites),
+                        )
+
+                        LazyHorizontalGrid(
+                            state = forgottenFavoritesLazyGridState,
+                            rows = GridCells.Fixed(4),
+                            flingBehavior =
+                            rememberSnapFlingBehavior(
+                                snapLayoutInfoProviderForgottenFavorite,
+                            ),
+                            contentPadding =
+                            WindowInsets.systemBars
+                                .only(WindowInsetsSides.Horizontal)
+                                .asPaddingValues(),
+                            modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(ListItemHeight * 4),
+                        ) {
+                            items(
+                                items = forgottenFavorite,
+                                key = { it.id },
+                            ) { originalSong ->
+                                val song by database
+                                    .song(originalSong.id)
+                                    .collectAsState(initial = originalSong)
+                                SongListItem(
+                                    song = song!!,
+                                    showInLibraryIcon = true,
+                                    isActive = song!!.id == mediaMetadata?.id,
+                                    isPlaying = isPlaying,
+                                    trailingContent = {
+                                        IconButton(
+                                            onClick = {
+                                                menuState.show {
+                                                    SongMenu(
+                                                        originalSong = song!!,
+                                                        navController = navController,
+                                                        onDismiss = menuState::dismiss,
+                                                    )
+                                                }
+                                            },
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Rounded.MoreVert,
+                                                contentDescription = null,
+                                            )
+                                        }
+                                    },
+                                    modifier =
+                                    Modifier
+                                        .width(horizontalLazyGridItemWidth)
                                         .combinedClickable(
                                             onClick = {
                                                 if (song!!.id == mediaMetadata?.id) {
@@ -416,8 +499,8 @@ fun HomeScreen(
                                                     playerConnection.playQueue(
                                                         YouTubeQueue(
                                                             WatchEndpoint(videoId = song!!.id),
-                                                            song!!.toMediaMetadata()
-                                                        )
+                                                            song!!.toMediaMetadata(),
+                                                        ),
                                                     )
                                                 }
                                             },
@@ -426,11 +509,11 @@ fun HomeScreen(
                                                     SongMenu(
                                                         originalSong = song!!,
                                                         navController = navController,
-                                                        onDismiss = menuState::dismiss
+                                                        onDismiss = menuState::dismiss,
                                                     )
                                                 }
-                                            }
-                                        )
+                                            },
+                                        ),
                                 )
                             }
                         }

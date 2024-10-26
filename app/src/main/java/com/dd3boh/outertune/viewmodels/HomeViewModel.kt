@@ -40,9 +40,11 @@ class HomeViewModel @Inject constructor(
     val recentActivity = MutableStateFlow<List<YTItem>?>(null)
     val recentPlaylistsDb = MutableStateFlow<List<Playlist>?>(null)
     val accountPlaylists = MutableStateFlow<List<PlaylistItem>?>(null)
+    val forgottenFavorite = MutableStateFlow<List<Song>?>(null)
 
     private suspend fun load() {
         quickPicks.value = database.quickPicks().first().shuffled().take(20)
+        forgottenFavorite.value = database.forgottenFavorites().first().shuffled().take(20)
 
         YouTube.libraryRecentActivity().onSuccess { page ->
             recentActivity.value = page.items.take(9).drop(1)
