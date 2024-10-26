@@ -80,6 +80,7 @@ val ShowLyricsKey = booleanPreferencesKey("showLyrics")
 val LyricsTextPositionKey = stringPreferencesKey("lyricsTextPosition")
 val MultilineLrcKey = booleanPreferencesKey("multilineLrc")
 val LyricTrimKey = booleanPreferencesKey("lyricTrim")
+val PreferredLyricsProviderKey = stringPreferencesKey("lyricsProvider")
 
 
 /**
@@ -213,6 +214,10 @@ val SearchSourceKey = stringPreferencesKey("searchSource")
 
 enum class SearchSource {
     LOCAL, ONLINE
+}
+
+enum class PreferredLyricsProvider {
+    KUGOU, LRCLIB
 }
 
 val VisitorDataKey = stringPreferencesKey("visitorData")

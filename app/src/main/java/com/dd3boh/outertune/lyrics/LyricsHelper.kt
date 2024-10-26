@@ -4,12 +4,18 @@ import android.content.Context
 import android.os.Build
 import android.util.LruCache
 import androidx.annotation.RequiresApi
+import com.dd3boh.outertune.constants.PreferredLyricsProvider
+import com.dd3boh.outertune.constants.PreferredLyricsProviderKey
 import com.dd3boh.outertune.db.MusicDatabase
 import com.dd3boh.outertune.db.entities.LyricsEntity.Companion.LYRICS_NOT_FOUND
+import com.dd3boh.outertune.extensions.toEnum
 import com.dd3boh.outertune.models.MediaMetadata
+import com.dd3boh.outertune.utils.dataStore
 import com.dd3boh.outertune.utils.reportException
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 // true will prioritize local lyric files over all cloud providers, true is vice versa
@@ -17,7 +23,17 @@ private const val PREFER_LOCAL_LYRIC = true
 class LyricsHelper @Inject constructor(
     @ApplicationContext private val context: Context,
 ) {
-    private val lyricsProviders = listOf(YouTubeSubtitleLyricsProvider, LrcLibLyricsProvider, KuGouLyricsProvider, YouTubeLyricsProvider)
+    private var lyricsProviders = listOf(LrcLibLyricsProvider,KuGouLyricsProvider, YouTubeSubtitleLyricsProvider, YouTubeLyricsProvider)
+    val preferred = context.dataStore.data.map {
+        it[PreferredLyricsProviderKey].toEnum(PreferredLyricsProvider.LRCLIB)
+    }.distinctUntilChanged()
+        .map {
+            lyricsProviders = if (it == PreferredLyricsProvider.LRCLIB) {
+                listOf(LrcLibLyricsProvider,KuGouLyricsProvider, YouTubeSubtitleLyricsProvider, YouTubeLyricsProvider)
+            } else {
+                listOf(KuGouLyricsProvider, LrcLibLyricsProvider, YouTubeSubtitleLyricsProvider, YouTubeLyricsProvider)
+            }
+        }
     private val cache = LruCache<String, List<LyricsResult>>(MAX_CACHE_SIZE)
 
     /**
