@@ -125,6 +125,10 @@ fun PlayerMenu(
 
     val download by LocalDownloadUtil.current.getDownload(mediaMetadata.id).collectAsState(initial = null)
 
+    val artists = remember(mediaMetadata.artists) {
+        mediaMetadata.artists.filter { it.id != null }
+    }
+
     var showChooseQueueDialog by rememberSaveable {
         mutableStateOf(false)
     }
@@ -465,8 +469,8 @@ fun PlayerMenu(
             icon = R.drawable.artist,
             title = R.string.view_artist
         ) {
-            if (mediaMetadata.artists.size == 1) {
-                navController.navigate("artist/${mediaMetadata.artists[0].id}")
+            if (artists.size == 1) {
+                navController.navigate("artist/${artists[0].id}")
                 playerBottomSheetState.collapseSoft()
                 onDismiss()
             } else {
