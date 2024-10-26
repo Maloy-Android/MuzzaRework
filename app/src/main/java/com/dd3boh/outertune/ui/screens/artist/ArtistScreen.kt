@@ -237,59 +237,63 @@ fun ArtistScreen(
                         )
                     }
 
-                    itemsIndexed(
+                    items(
                         items = librarySongs,
-                        key = { _, item -> item.hashCode() }
-                    ) { index, song ->
-                        SwipeToQueueBox(
-                            item = song.toMediaItem(),
-                            content = {
-                                SongListItem(
-                                    song = song,
-                                    isActive = song.id == mediaMetadata?.id,
-                                    isPlaying = isPlaying,
-                                    trailingContent = {
-                                        IconButton(
-                                            onClick = {
-                                                menuState.show {
-                                                    SongMenu(
-                                                        originalSong = song,
-                                                        navController = navController,
-                                                        onDismiss = menuState::dismiss
-                                                    )
-                                                }
-                                            }
-                                        ) {
-                                            Icon(
-                                                imageVector = Icons.Rounded.MoreVert,
-                                                contentDescription = null
+                        key = { "local_${it.id}" }
+                    ) { song ->
+                        SongListItem(
+                            song = song,
+                            isActive = song.id == mediaMetadata?.id,
+                            isPlaying = isPlaying,
+                            trailingContent = {
+                                IconButton(
+                                    onClick = {
+                                        menuState.show {
+                                            SongMenu(
+                                                originalSong = song,
+                                                navController = navController,
+                                                onDismiss = menuState::dismiss
+                                            )
+                                        }
+                                    }
+                                ) {
+                                    Icon(
+                                        imageVector =  Icons.Rounded.MoreVert,
+                                        contentDescription = null
+                                    )
+                                }
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .combinedClickable(
+                                    onClick = {
+                                        if (song.id == mediaMetadata?.id) {
+                                            playerConnection.player.togglePlayPause()
+                                        } else {
+                                            playerConnection.playQueue(
+                                                YouTubeQueue(
+                                                    WatchEndpoint(
+                                                        videoId = song.id,
+                                                    ),
+                                                    song.toMediaMetadata(),
+                                                ),
                                             )
                                         }
                                     },
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .combinedClickable {
-                                            if (song.id == mediaMetadata?.id) {
-                                                playerConnection.player.togglePlayPause()
-                                            } else {
-                                                playerConnection.playQueue(
-                                                    ListQueue(
-                                                        title = "Library: ${artistPage.artist.title}",
-                                                        items = librarySongs.filter { it.song.isLocal }.toList()
-                                                            .shuffled().map { it.toMediaMetadata() },
-                                                        startIndex = index
-                                                    )
-                                                )
-                                            }
+                                    onLongClick = {
+                                        menuState.show {
+                                            SongMenu(
+                                                originalSong = song,
+                                                navController = navController,
+                                                onDismiss = menuState::dismiss,
+                                            )
                                         }
-                                        .animateItemPlacement()
-                                )
-                            },
-                            snackbarHostState = snackbarHostState
+                                    },
+                                ).animateItemPlacement(),
                         )
-
                     }
                 }
+
 
                 artistPage.sections.fastForEach { section ->
                     item {
