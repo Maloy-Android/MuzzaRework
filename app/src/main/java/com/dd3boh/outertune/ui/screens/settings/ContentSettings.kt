@@ -1,7 +1,13 @@
 package com.dd3boh.outertune.ui.screens.settings
 
+import android.content.ActivityNotFoundException
 import android.content.res.Configuration
+import android.os.Build
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import android.os.LocaleList
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.AddLink
 import androidx.compose.material.icons.rounded.Language
 import androidx.compose.material.icons.rounded.LocationOn
 import androidx.compose.material.icons.rounded.Person
@@ -79,6 +86,7 @@ fun ContentSettings(
     navController: NavController,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
+    val context = LocalContext.current
     val accountName by rememberPreference(AccountNameKey, "")
     val accountEmail by rememberPreference(AccountEmailKey, "")
     val accountChannelHandle by rememberPreference(AccountChannelHandleKey, "")
@@ -148,6 +156,23 @@ fun ContentSettings(
             },
             onValueSelected = onContentCountryChange
         )
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PreferenceEntry(
+                title = { Text(stringResource(R.string.open_supported_links)) },
+                description = stringResource(R.string.configure_supported_links),
+                icon = { Icon(imageVector = (Icons.Rounded.AddLink), null) },
+                onClick = {
+                    try {
+                        context.startActivity(
+                            Intent(Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS, Uri.parse("package:${context.packageName}")),
+                        )
+                    } catch (e: ActivityNotFoundException) {
+                        Toast.makeText(context, R.string.intent_supported_links_not_found, Toast.LENGTH_LONG).show()
+                    }
+                },
+            )
+        }
 
         PreferenceGroupTitle(
             title = stringResource(R.string.app_language),
