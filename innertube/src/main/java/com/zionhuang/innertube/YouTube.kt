@@ -88,6 +88,11 @@ object YouTube {
         set(value) {
             innerTube.proxy = value
         }
+    var useLoginForBrowse: Boolean
+        get() = innerTube.useLoginForBrowse
+        set(value) {
+            innerTube.useLoginForBrowse = value
+        }
 
     suspend fun searchSuggestions(query: String): Result<SearchSuggestions> = runCatching {
         val response = innerTube.getSearchSuggestions(WEB_REMIX, query).body<GetSearchSuggestionsResponse>()
@@ -229,7 +234,7 @@ object YouTube {
     }
 
     suspend fun albumSongs(playlistId: String): Result<List<SongItem>> = runCatching {
-        val response = innerTube.browse(WEB_REMIX, "VL$playlistId").body<BrowseResponse>()
+        var response = innerTube.browse(WEB_REMIX, "VL$playlistId").body<BrowseResponse>()
 
         val contents =
             response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
@@ -312,7 +317,6 @@ object YouTube {
         val response = innerTube.browse(
             client = WEB_REMIX,
             browseId = "VL$playlistId",
-            setLogin = true
         ).body<BrowseResponse>()
 
         if (response.header != null)
