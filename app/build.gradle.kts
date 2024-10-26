@@ -38,6 +38,7 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+        viewBinding = true
     }
 
 // build variants and stuff

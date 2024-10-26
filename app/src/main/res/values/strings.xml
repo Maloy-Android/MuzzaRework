@@ -1,5 +1,5 @@
 <resources>
-<!--InnerTune strings-->
+    <!--InnerTune strings-->
     <!--!!! If you are modifying OuterTune strings, they are at the bottom with the same headings !!!-->
 
     <!-- Bottom navigation -->
@@ -363,48 +363,47 @@
     <string name="new_version_available">New version available</string>
 
 
+    <!--OuterTune strings below-->
 
-
-<!--OuterTune strings below-->
-
-<!-- Bottom navigation -->
+    <!-- Bottom navigation -->
     <string name="folders">Folders</string>
     <string name="library">Library</string>
 
-<!-- Home -->
+    <!-- Home -->
     <string name="recent_activity">Recent activity</string>
     <string name="not_internet">No Internet Connection</string>
     <string name="internet_required">It looks like you have no Internet connection. Please check your network.</string>
     <string name="downloadspage">Go to downloads</string>
-<!-- Queue -->
+    <!-- Queue -->
     <string name="song_added_to_queue">\"%s\" added to queue</string>
     <string name="create_queue">New queue</string>
 
-<!-- Playlist -->
+    <!-- Playlist -->
     <string name="auto_playlist">Auto playlist</string>
 
-<!-- Menu -->
+    <!-- Menu -->
     <string name="select">Selection mode</string>
     <string name="like_all">Like all</string>
 
-<!-- Sort menu -->
+    <!-- Sort menu -->
     <string name="sort_by_date_modified">Date modified</string>
     <string name="sort_by_date_released">Date released</string>
 
-<!-- Dialog -->
+    <!-- Dialog -->
     <string name="play_count">Play count</string>
 
-<!-- Settings -->
+    <!-- Settings -->
     <string name="settings_debug">Debug</string>
 
-<!-- Appearance settings -->
+    <!-- Appearance settings -->
     <string name="player_background_style">Player background style</string>
     <string name="player_background_default">Follow theme</string>
     <string name="player_background_gradient">Gradient</string>
     <string name="player_background_blur">Blur</string>
     <string name="blurmv">Blur (Motion)</string>
     <string name="new_interface">New interface layout</string>
-    <string name="show_liked_and_downloaded_playlist">Show liked and downloaded playlists in library</string>">
+    <string name="show_liked_and_downloaded_playlist">Show liked and downloaded playlists in library</string>
+    ">
 
     <!-- Content settings -->
     <string name="ytm_sync">Automatically sync with your YouTube Music account</string>
@@ -414,13 +413,13 @@
     <string name="keep_alive_title">Prevent system killing app</string>
     <string name="keep_alive_description">Use a foreground notification to prevent OuterTune from being randomly closed by the system.</string>
 
-<!--Lyrics settings -->
+    <!--Lyrics settings -->
     <string name="lyrics_settings_title">Lyrics</string>
     <string name="lyrics_multiline_title">Read multiline lyrics</string>
     <string name="lyrics_multiline_description">Treat all the lines between sync points as one lyric text</string>
     <string name="lyrics_trim_title">Remove spaces around lyrics</string>
 
-<!-- Local player settings -->
+    <!-- Local player settings -->
     <string name="local_player_settings_title">Local Media</string>
     <string name="flat_subfolders_title">Flatten subfolders</string>
     <string name="flat_subfolders_description">Disable to preserve the file structure as on disk</string>
@@ -429,7 +428,7 @@
     <string name="import_m3u">Import a playlist (m3u)</string>
     <string name="m3u_import_failed">Failed to import playlist</string>
 
-<!-- Scanner settings -->
+    <!-- Scanner settings -->
     <string name="local_scanner_title">Local scanner</string>
     <string name="auto_scanner_title">Scan automatically</string>
     <string name="auto_scanner_description">Automatically scan for songs when opening the app. This does not reload metadata of existing songs.</string>
@@ -443,7 +442,7 @@
     <string name="manual_scanner_title">Manual scanner</string>
     <string name="scanner_warning">By default, the scanner will NOT reload any metadata of existing songs unless you specify otherwise above. Depending on the size of your library, it make take a while.</string>
 
-<!-- Scanner parameter settings-->
+    <!-- Scanner parameter settings-->
     <string name="scanner_settings_title">Additional scanner settings</string>
     <string name="scanner_strict_file_name_title">Strict file names</string>
     <string name="scanner_strict_file_name_description">When enabled, file names will NOT be ignored. Ex. "Song.ogg" will be a different song from "Song.flac". Scanner sensitivity preference will still apply</string>
@@ -459,4 +458,7 @@
     <string name="experimental_settings_title">Experimental</string>
     <string name="dev_settings_title">Enable developer settings</string>
     <string name="dev_settings_description">Reveals additional advanced settings intended for development use</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="app_widget_description">This is an app widget description</string>
 </resources>
