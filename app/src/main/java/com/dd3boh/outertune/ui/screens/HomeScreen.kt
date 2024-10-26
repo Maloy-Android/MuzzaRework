@@ -448,7 +448,8 @@ fun HomeScreen(
                 }
 
                 forgottenFavorite?.let { forgottenFavorite ->
-                    if (forgottenFavorite.isNotEmpty() && forgottenFavorite.size > 5) {
+                    val filteredForgottenFavorites = forgottenFavorite.filter { !it.song.isLocal }
+                    if (filteredForgottenFavorites.isNotEmpty() && filteredForgottenFavorites.size > 5) {
                         NavigationTitle(
                             title = stringResource(R.string.forgotten_favorites),
                         )
@@ -470,7 +471,7 @@ fun HomeScreen(
                                 .height(ListItemHeight * 4),
                         ) {
                             items(
-                                items = forgottenFavorite,
+                                items = filteredForgottenFavorites,
                                 key = { it.id },
                             ) { originalSong ->
                                 val song by database
@@ -499,8 +500,7 @@ fun HomeScreen(
                                             )
                                         }
                                     },
-                                    modifier =
-                                    Modifier
+                                    modifier = Modifier
                                         .width(horizontalLazyGridItemWidth)
                                         .combinedClickable(
                                             onClick = {
