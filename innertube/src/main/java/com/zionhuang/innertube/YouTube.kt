@@ -234,7 +234,7 @@ object YouTube {
     }
 
     suspend fun albumSongs(playlistId: String): Result<List<SongItem>> = runCatching {
-        var response = innerTube.browse(WEB_REMIX, "VL$playlistId").body<BrowseResponse>()
+        val response = innerTube.browse(WEB_REMIX, "VL$playlistId").body<BrowseResponse>()
 
         val contents =
             response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
